@@ -7,9 +7,9 @@ import Footer from './containers/Footer';
 
 const Index = () => {
   return (
-    <SafeAreaView style={style.container}>
+    <SafeAreaView style={styles.container}>
       <Header />
-      <ScrollView style={style.scrollContainer}>
+      <ScrollView style={styles.scrollContainer}>
         <Body />
       </ScrollView>
       <Footer onPressPrev={() => {}} onPressNext={() => {}} />
@@ -17,7 +17,7 @@ const Index = () => {
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },

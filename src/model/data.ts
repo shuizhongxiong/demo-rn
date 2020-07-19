@@ -1,7 +1,7 @@
 import {ImageSourcePropType} from 'react-native';
-import homeRepair from '../assets/images/home-repair.png';
-import digitalRepair from '../assets/images/digital-repair.png';
-import housekeeping from '../assets/images/housekeeping.png';
+import homeRepair from '~/assets/images/home-repair.png';
+import digitalRepair from '~/assets/images/digital-repair.png';
+import housekeeping from '~/assets/images/housekeeping.png';
 
 export interface ICareer {
   id: number;
