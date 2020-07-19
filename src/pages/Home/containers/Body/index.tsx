@@ -1,23 +1,25 @@
-import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View} from 'react-native';
 
 import {careerList} from '~/model/data';
+import SelectCareer from './SelectCareer';
 
 const Body = () => {
+  const [careerSelectedId, setCareerSelectedId] = useState<number | null>(null);
+
+  const onChangeCareer = (id: number) => {
+    setCareerSelectedId(id);
+  };
+
   return (
     <View>
-      {careerList.map((d) => (
-        <Image key={d.id} source={d.icon} style={styles.image} />
-      ))}
+      <SelectCareer
+        careerList={careerList}
+        careerSelectedId={careerSelectedId}
+        onChangeCareer={onChangeCareer}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  image: {
-    width: 76,
-    height: 76,
-  },
-});
 
 export default Body;

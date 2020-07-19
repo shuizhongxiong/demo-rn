@@ -8,29 +8,31 @@ interface FooterProps {
   onPressNext?: (() => void) | null;
 }
 
-const Footer = ({
-  prevText = '上一步',
-  nextText = '下一步',
-  onPressPrev = null,
-  onPressNext = null,
-}: FooterProps) => {
-  return (
-    <View style={styles.container}>
-      {!!onPressPrev && (
-        <TouchableOpacity style={styles.button} onPress={onPressPrev}>
-          <Text style={styles.buttonText}>{prevText}</Text>
-        </TouchableOpacity>
-      )}
-      {!!onPressNext && (
-        <TouchableOpacity
-          style={[styles.button, styles.buttonPrimary]}
-          onPress={onPressNext}>
-          <Text style={styles.buttonPrimaryText}>{nextText}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
+const Footer = React.memo(
+  ({
+    prevText = '上一步',
+    nextText = '下一步',
+    onPressPrev = null,
+    onPressNext = null,
+  }: FooterProps) => {
+    return (
+      <View style={styles.container}>
+        {!!onPressPrev && (
+          <TouchableOpacity style={styles.button} onPress={onPressPrev}>
+            <Text style={styles.buttonText}>{prevText}</Text>
+          </TouchableOpacity>
+        )}
+        {!!onPressNext && (
+          <TouchableOpacity
+            style={[styles.button, styles.buttonPrimary]}
+            onPress={onPressNext}>
+            <Text style={styles.buttonPrimaryText}>{nextText}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

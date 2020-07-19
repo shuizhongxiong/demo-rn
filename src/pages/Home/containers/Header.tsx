@@ -12,8 +12,11 @@ const renderStatus = (i: number, step: number, navList: any[]) => {
   }
 };
 
-const Header = () => {
-  const step = 2;
+interface HeaderProps {
+  step: number;
+}
+
+const Header = React.memo(({step = 0}: HeaderProps) => {
   const navList = [
     {
       label: '实名认证',
@@ -44,7 +47,7 @@ const Header = () => {
       <View style={styles.itemLine} />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
