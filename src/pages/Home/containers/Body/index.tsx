@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 
-import {careerList} from '~/model/data';
+import {careerList} from '~/models/data';
 import SelectCareer from './SelectCareer';
 
 const Body = () => {
