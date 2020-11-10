@@ -1,9 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {Animated, Dimensions, Easing, View, Vibration} from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  View,
+  Vibration,
+  Platform,
+} from 'react-native';
 import {Portal} from '@ant-design/react-native';
 import useUpdateEffect from '~/utils/hooks/useUpdateEffect';
-import useTimeout from '~/utils/hooks/useTimeout';
 import BoomCount from './boom-count';
 
 const WinWidth = Dimensions.get('screen').width;
@@ -26,12 +32,13 @@ const posYMax = WinHeight / 3 - BoomImagesSize; // 无论点在哪里，y 轴最
 const AnimatedDuration = 450; // 动画时长
 const vibrateDuration = 200; // 震动时长
 const FramesStep = 60; // 默认每 60ms 生成一帧，帧数越小抛物线越平滑，但计算量越大
+const BoomCountMax = 1000; // 超过则隐藏点赞计数
 let AnimatedTimer: any = null; // 长按动画计时器
 
 // 计算随机终点
 const getEndPos = (startPos: BoomViewProps['startPos']) => {
-  const startX = startPos.x;
-  const startY = startPos.y;
+  const startX = startPos[0];
+  const startY = startPos[1];
   const leftMax = Math.min(startX, posXMax);
   const rightMax = Math.min(WinWidth - startX, posXMax);
   const upMax = Math.min(startY, posYMax);
@@ -128,26 +135,18 @@ const parabola = ({
 };
 
 interface BoomViewProps {
-  startPos: {x: number; y: number};
-  boomState: string; // 'start' | 'finish'
+  startPos: number[];
+  boomState: string; // 'start' | 'continue' | 'finish'
 }
 const BoomView = (props: BoomViewProps) => {
-  const [isInit, setIsInit] = useState<boolean>(true);
+  // 提前加载动画元素
+  useEffect(() => {
+    initBooms();
+  }, []);
+
   useUpdateEffect(() => {
-    if (isInit) {
-      setIsInit(false);
-      initBooms();
-    }
     startBoom();
   }, [props.boomState]);
-
-  const [timer, setTimer] = useState<null | number>(null);
-  useTimeout(() => {
-    if (timer) {
-      setTimer(null);
-    }
-    startBoom();
-  }, timer);
 
   const [boomsView, setBoomsView] = useState<any[]>([]);
   const [boomsFrame, setBoomsFrame] = useState<any>({});
@@ -175,7 +174,7 @@ const BoomView = (props: BoomViewProps) => {
 
   // 生成动画元素配置，并开始爆炸动画
   const startBoom = () => {
-    if (props.boomState !== 'start') {
+    if (props.boomState === 'finish') {
       if (AnimatedTimer) {
         cancelAnimationFrame(AnimatedTimer);
         AnimatedTimer = null;
@@ -185,10 +184,16 @@ const BoomView = (props: BoomViewProps) => {
     }
 
     // 长按情况下，自动开始下次动画
-    AnimatedTimer = requestAnimationFrame(startBoom);
+    if (props.boomState === 'continue') {
+      if (Platform.OS === 'ios') {
+        AnimatedTimer = setTimeout(startBoom, 160);
+      } else {
+        AnimatedTimer = requestAnimationFrame(startBoom);
+      }
+    }
 
     // 点击震动
-    // Vibration.vibrate(vibrateDuration);
+    Vibration.vibrate(vibrateDuration);
 
     setBoomsFrame((prev) => {
       const cur = {...prev};
@@ -246,6 +251,7 @@ const BoomView = (props: BoomViewProps) => {
           return cur1;
         });
       });
+
       return cur;
     });
 
@@ -259,15 +265,15 @@ const BoomView = (props: BoomViewProps) => {
     if (props.startPos) {
       setBoomImageStyle({
         position: 'absolute',
-        top: props.startPos.y - BoomImagesSize / 2,
-        left: props.startPos.x - BoomImagesSize / 2,
+        top: props.startPos[1] - BoomImagesSize / 2,
+        left: props.startPos[0] - BoomImagesSize / 2,
         width: BoomImagesSize,
         height: BoomImagesSize,
       });
 
       const style: any = {position: 'absolute'};
-      const startX = props.startPos.x;
-      const startY = props.startPos.y;
+      const startX = props.startPos[0];
+      const startY = props.startPos[1];
       const centerPos = [WinWidth / 2, WinHeight / 2];
       if (startX <= centerPos[0]) {
         style.left = startX;
@@ -326,10 +332,12 @@ const BoomView = (props: BoomViewProps) => {
               />
             )),
           )}
-        <View style={boomTxtStyle}>
-          {boomsCount > 1 && <BoomCount count={boomsCount} />}
-        </View>
       </View>
+      {boomsCount > 1 && boomsCount < BoomCountMax && (
+        <View style={boomTxtStyle} pointerEvents={'none'}>
+          <BoomCount count={boomsCount} />
+        </View>
+      )}
     </Portal>
   );
 };

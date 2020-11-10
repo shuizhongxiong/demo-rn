@@ -8,7 +8,6 @@ target 'DemoRN' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-
   target 'DemoRNTests' do
     inherit! :complete
     # Pods for testing
@@ -21,5 +20,14 @@ target 'DemoRN' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
+  end
+end
+
+target 'DemoRN-tvOS' do
+  # Pods for DemoRN-tvOS
+
+  target 'DemoRN-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
   end
 end

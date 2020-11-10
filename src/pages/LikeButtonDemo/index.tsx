@@ -1,11 +1,20 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import LikeButton from '~/components/like-button';
 
 const LikeButtonDemo = () => {
   const [activeList, setActiveList] = useState<boolean[]>([]);
+
+  const onActiveChange = (i: number, value: boolean) => {
+    // 模拟异步请求延迟
+    setTimeout(() => {
+      const activeCur = [...activeList];
+      activeCur[i] = value;
+      setActiveList(activeCur);
+    }, 300);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,11 +26,9 @@ const LikeButtonDemo = () => {
               height={25}
               width={25}
               active={activeList[i]}
-              onActiveChange={(value: boolean) => {
-                const activeCur = [...activeList];
-                activeCur[i] = value;
-                setActiveList(activeCur);
-              }}
+              onActiveChange={onActiveChange.bind(this, i)}
+              prefixChildren={<Text>点赞</Text>}
+              suffixChildren={<Text>123</Text>}
             />
           </View>
         ))}

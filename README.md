@@ -29,8 +29,13 @@ npx react-native init MyApp --template react-native-template-typescript
 ```bash
 # 路由 https://reactnavigation.org/docs/getting-started
 # 注意屏幕适配 https://reactnavigation.org/docs/handling-safe-area/#summary
-yarn add react-navigation
-yarn add react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
+yarn add @react-navigation/native
+yarn add react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
+yarn add @react-navigation/stack
+
+# native 0.60 以上自动 link，0.60 以下需要手动执行 react-native link
+# Mac 下调试 ios 需执行
+npx pod-install ios
 ```
 
 ```bash
@@ -38,8 +43,12 @@ yarn add react-native-reanimated react-native-gesture-handler react-native-scree
 yarn add @ant-design/react-native
 react-native link @ant-design/react-native
 
-# 安装peer依赖，安装完依赖后需要到 iOS 目录 `pod install`(auto linking)，Android 不需要手动处理
+# 安装peer依赖
 yarn add @react-native-community/cameraroll @react-native-community/picker @react-native-community/segmented-control @react-native-community/slider @react-native-community/viewpager @react-native-community/async-storage
+
+# native 0.60 以上自动 link，0.60 以下需要手动执行 react-native link
+# Mac 下调试 ios 需执行
+npx pod-install ios
 
 # 手动链接字体图标
 npx react-native link
@@ -55,20 +64,32 @@ yarn add babel-plugin-import -D
 ```
 
 ```bash
-# 字体 参考 https://github.com/oblador/react-native-vector-icons
-yarn add react-native-vector-icons
-yarn add @types/react-native-vector-icons -D
-
 # 解决路径引入问题 参考 https://github.com/entwicklerstube/babel-plugin-root-import
 yarn add babel-plugin-root-import -D
+# 修改 tsconfig.json 文件
+"baseUrl": "./src"
+"paths": {
+  "~/*": ["*"] // resolve any `~/foo/bar` to `<baseUrl>/foo/bar`
+}
+```
 
+```bash
 # lottie
 # 安装参考 https://github.com/react-native-community/lottie-react-native
 # 用法参考 https://github.com/react-native-community/lottie-react-native/blob/master/docs/typescript.md
 yarn add lottie-react-native
 yarn add lottie-ios@3.1.8
-cd ios
-pod install
 
+# native 0.60 以上自动 link，0.60 以下需要手动执行 react-native link
+# Mac 下调试 ios 需执行
+npx pod-install ios
+```
+
+```bash
+# 字体 参考 https://github.com/oblador/react-native-vector-icons
+yarn add react-native-vector-icons
+yarn add @types/react-native-vector-icons -D
+
+# 弹窗
 yarn add react-native-modal -D
 ```
